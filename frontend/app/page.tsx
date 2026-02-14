@@ -26,7 +26,12 @@ export default function Home() {
   const [statusFilter, setStatusFilter] = useState("all");
   const [toast, setToast] = useState<ToastState | null>(null);
 
-  // Fetch tasks when filters change (with debounce for search)
+  // Load tasks on first render (no delay)
+  useEffect(() => {
+    loadTasks();
+  }, []);
+
+  // Reload tasks when search or filter changes (with debounce)
   useEffect(() => {
     const timer = setTimeout(() => loadTasks(), 400);
     return () => clearTimeout(timer);
@@ -38,7 +43,6 @@ export default function Home() {
 
   async function loadTasks() {
     try {
-      setLoading(true);
       const data = await fetchTasks(searchTerm, statusFilter);
       setTasks(data);
     } catch {
