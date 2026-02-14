@@ -2,7 +2,7 @@
 
 A simple full-stack task manager app. Add tasks, mark them complete, delete them, search and filter — all in a clean UI.
 
-> **Note:** Use the `main` branch for code review and testing. The `deployment` branch is used for Vercel deployment (backend logic moved to Next.js API routes).
+> **Note:** Use the `main` branch for code review and testing.
 
 ## Tech Stack
 
