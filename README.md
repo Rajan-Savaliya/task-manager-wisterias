@@ -2,6 +2,8 @@
 
 A simple full-stack task manager app. Add tasks, mark them complete, delete them, search and filter — all in a clean UI.
 
+**Written by Rajan Savaliya**
+
 > **Note:** Use the `main` branch for code review and testing.
 
 ## Tech Stack
