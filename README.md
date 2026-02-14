@@ -1,48 +1,51 @@
 # Task Manager
 
-A simple full-stack task manager application built with Express.js and Next.js.
+A simple full-stack task manager app. Add tasks, mark them complete, delete them, search and filter — all in a clean UI.
 
 ## Tech Stack
 
-**Backend:**
-- Node.js
-- Express.js
-- Jest + Supertest (testing)
+**Backend:** Node.js, Express.js, Jest + Supertest
 
-**Frontend:**
-- Next.js (App Router)
-- TypeScript
-- React (useState, useEffect)
-- Plain CSS
+**Frontend:** Next.js (App Router), TypeScript, React, Plain CSS
 
 ## Project Structure
 
 ```
-task-manager-wisterias/
-├── backend/                  # Express API server
-│   ├── server.js             # API routes and Express setup
-│   ├── data.js               # In-memory data store and helper functions
-│   ├── package.json
-│   └── tests/
-│       └── api.test.js       # API endpoint tests
-├── frontend/                 # Next.js frontend
+├── backend/
+│   ├── server.js                # App entry point — sets up Express and middleware
+│   ├── routes/
+│   │   └── taskRoutes.js        # Defines API routes (GET, POST, PUT, DELETE)
+│   ├── controllers/
+│   │   └── taskController.js    # Handles requests and sends responses
+│   ├── services/
+│   │   └── taskService.js       # Data logic — CRUD operations on the task array
+│   ├── helpers/
+│   │   └── response.js          # Reusable response helper function
+│   ├── tests/
+│   │   └── api.test.js          # 4 API tests
+│   └── package.json
+│
+├── frontend/
 │   ├── app/
-│   │   ├── layout.tsx        # Root layout
-│   │   ├── page.tsx          # Main page (state management)
-│   │   └── globals.css       # All styles
+│   │   ├── layout.tsx           # Root layout
+│   │   ├── page.tsx             # Main page — state and event handlers
+│   │   └── globals.css          # All styles
 │   ├── components/
-│   │   ├── TaskForm.tsx      # Add new task form
-│   │   ├── TaskList.tsx      # Renders list of tasks
-│   │   ├── TaskItem.tsx      # Single task with checkbox and delete
-│   │   └── FilterBar.tsx     # Search and status filter
-│   └── lib/
-│       └── api.ts            # API helper functions
+│   │   ├── TaskForm.tsx         # Input form to add a new task
+│   │   ├── TaskList.tsx         # Renders the list of tasks
+│   │   ├── TaskItem.tsx         # Single task row — checkbox, title, delete
+│   │   ├── FilterBar.tsx        # Search input and status dropdown
+│   │   └── Toast.tsx            # Toast notification for success/error
+│   ├── lib/
+│   │   └── api.ts               # All API calls to the backend
+│   └── package.json
+│
 └── README.md
 ```
 
-## Setup Instructions
+## How to Run
 
-### Backend
+### 1. Start the backend
 
 ```bash
 cd backend
@@ -50,9 +53,9 @@ npm install
 npm run dev
 ```
 
-The API server will run on **http://localhost:5001**.
+This starts the API server on **http://localhost:5001**.
 
-### Frontend
+### 2. Start the frontend
 
 ```bash
 cd frontend
@@ -60,11 +63,11 @@ npm install
 npm run dev
 ```
 
-The frontend will run on **http://localhost:3000**.
+This starts the web app on **http://localhost:3000**. Open it in your browser.
 
-> **Note:** Start the backend first, then the frontend. The frontend calls the backend API.
+> Start the backend first. The frontend talks to the backend API.
 
-## Running Tests
+### 3. Run tests
 
 ```bash
 cd backend
@@ -72,69 +75,61 @@ npm test
 ```
 
 This runs 4 tests:
-1. GET /tasks returns an array of tasks
-2. POST /tasks creates a new task
-3. POST /tasks fails with empty title
-4. DELETE /tasks/:id removes a task
+- GET /tasks — returns a list of tasks
+- POST /tasks — creates a new task
+- POST /tasks — returns 400 if title is empty
+- DELETE /tasks/:id — deletes a task
 
-## API Documentation
+## API Endpoints
 
 Base URL: `http://localhost:5001`
 
-All responses follow this format:
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | /tasks | Get all tasks. Use `?search=` and `?status=completed` or `pending` to filter |
+| POST | /tasks | Create a task. Send `{ "title": "Task name" }` in the body |
+| PUT | /tasks/:id | Update a task. Send `{ "completed": true }` or `{ "title": "New name" }` |
+| DELETE | /tasks/:id | Delete a task |
+
+Every response looks like this:
+
 ```json
 {
-  "status": true/false,
-  "message": "Description",
-  "data": null or object/array,
+  "status": true,
+  "message": "Tasks fetched successfully",
+  "data": [],
   "statusCode": 200
 }
 ```
 
-### Endpoints
-
-#### GET /tasks
-Fetch all tasks. Supports optional query parameters:
-- `search` — filter by title (case-insensitive, partial match)
-- `status` — filter by status: `all`, `completed`, or `pending`
-
-**Example:** `GET /tasks?search=react&status=pending`
-
-#### POST /tasks
-Create a new task.
-
-**Body:** `{ "title": "Task name" }`
-
-Returns `400` if title is missing or empty.
-
-#### PUT /tasks/:id
-Update a task.
-
-**Body:** `{ "completed": true }` or `{ "title": "New title" }`
-
-Returns `404` if task not found.
-
-#### DELETE /tasks/:id
-Delete a task by ID.
-
-Returns `404` if task not found.
-
 ## Architecture
 
-The app follows a simple client-server architecture:
+This app has two parts that run separately:
 
-1. **User interacts** with the React frontend
-2. **Frontend calls** the backend API using fetch
-3. **Backend processes** the request and updates the in-memory array
-4. **Backend returns** a JSON response
-5. **Frontend updates** state and re-renders the UI
+**Backend (Express)** — A REST API that stores tasks in a simple JavaScript array (no database). It follows a layered structure:
 
-Data is stored in a simple JavaScript array (no database). Data resets when the server restarts.
+- **Routes** → define which URL goes where
+- **Controllers** → handle the request, call the service, send a response
+- **Services** → do the actual work (add, update, delete, filter tasks)
+- **Helpers** → small reusable functions (like the response formatter)
 
-### Key Design Decisions
+This structure makes it easy to add new features. For example, to add a `/users` API, you just create a new route file, a new controller, and a new service — without touching existing code.
 
-- **In-memory storage** — keeps the project simple with no database setup
-- **Separate frontend/backend** — demonstrates API integration skills
-- **Plain CSS** — shows understanding of styling without relying on frameworks
-- **TypeScript on frontend** — adds type safety while keeping code readable
-- **Debounced search** — prevents excessive API calls while typing
+**Frontend (Next.js)** — A React app that talks to the backend using `fetch`. The main page manages all the state (tasks, search, filters). Each component has one job — form, list, item, filter, toast. Styles are plain CSS, no libraries.
+
+**How they connect:**
+
+```
+User clicks something
+  → React calls a function in lib/api.ts
+    → api.ts sends a fetch request to the Express backend
+      → Express routes it to the right controller
+        → Controller calls the service to do the work
+          → Service updates the array and returns the result
+        → Controller sends a JSON response back
+      → api.ts returns the data to React
+    → React updates state
+  → UI re-renders
+```
+
+Data lives in memory, so it resets when the backend restarts. In a real app, you'd replace the service layer with a database.

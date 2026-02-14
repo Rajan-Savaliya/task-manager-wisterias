@@ -1,6 +1,6 @@
 const request = require("supertest");
 const app = require("../server");
-const { resetTasks } = require("../data");
+const { resetTasks } = require("../services/taskService");
 
 // Reset the in-memory data before each test
 beforeEach(() => {

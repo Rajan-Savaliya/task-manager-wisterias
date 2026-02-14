@@ -1,13 +1,13 @@
 // In-memory task storage
+// Replace this with a database in a real app
 
 let tasks = [];
 let nextId = 1;
 
-// Get all tasks (with optional search and status filter)
+// Get tasks with optional search and status filter
 function getTasks(searchTerm, statusFilter) {
   let result = tasks;
 
-  // Filter by search term
   if (searchTerm) {
     const search = searchTerm.toLowerCase();
     result = result.filter((task) =>
@@ -15,7 +15,6 @@ function getTasks(searchTerm, statusFilter) {
     );
   }
 
-  // Filter by status
   if (statusFilter === "completed") {
     result = result.filter((task) => task.completed);
   } else if (statusFilter === "pending") {
@@ -29,7 +28,7 @@ function getTasks(searchTerm, statusFilter) {
 function createTask(title) {
   const task = {
     id: nextId++,
-    title: title,
+    title,
     completed: false,
     createdAt: new Date().toISOString(),
   };
