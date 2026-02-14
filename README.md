@@ -131,5 +131,3 @@ User clicks something
     → React updates state
   → UI re-renders
 ```
-
-Data lives in memory, so it resets when the backend restarts. In a real app, you'd replace the service layer with a database.
