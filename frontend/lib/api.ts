@@ -1,4 +1,4 @@
-const BASE_URL = "http://localhost:5001";
+const BASE_URL = "/api";
 
 // Fetch tasks with optional filters
 export async function fetchTasks(search?: string, status?: string) {
