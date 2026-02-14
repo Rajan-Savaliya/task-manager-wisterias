@@ -1,131 +1,69 @@
 // In-memory task storage
-// Using a simple array instead of a database for simplicity
 
-let tasks = [
-  {
-    id: 1,
-    title: "Learn React basics",
-    completed: true,
-    createdAt: "2025-01-15T10:30:00.000Z",
-  },
-  {
-    id: 2,
-    title: "Build a task manager app",
-    completed: false,
-    createdAt: "2025-01-16T09:00:00.000Z",
-  },
-  {
-    id: 3,
-    title: "Write unit tests",
-    completed: false,
-    createdAt: "2025-01-17T14:20:00.000Z",
-  },
-];
+let tasks = [];
+let nextId = 1;
 
-// Auto-increment counter for new task IDs
-let nextId = 4;
+// Get all tasks (with optional search and status filter)
+function getTasks(searchTerm, statusFilter) {
+  let result = tasks;
 
-// Get all tasks
-function getAllTasks() {
-  return tasks;
-}
-
-// Get tasks filtered by search term and/or status
-function getFilteredTasks(searchTerm, statusFilter) {
-  let filteredTasks = [...tasks];
-
-  // Filter by search term (case-insensitive, partial match)
+  // Filter by search term
   if (searchTerm) {
-    const lowerSearch = searchTerm.toLowerCase();
-    filteredTasks = filteredTasks.filter((task) =>
-      task.title.toLowerCase().includes(lowerSearch)
+    const search = searchTerm.toLowerCase();
+    result = result.filter((task) =>
+      task.title.toLowerCase().includes(search)
     );
   }
 
-  // Filter by completion status
+  // Filter by status
   if (statusFilter === "completed") {
-    filteredTasks = filteredTasks.filter((task) => task.completed === true);
+    result = result.filter((task) => task.completed);
   } else if (statusFilter === "pending") {
-    filteredTasks = filteredTasks.filter((task) => task.completed === false);
+    result = result.filter((task) => !task.completed);
   }
 
-  return filteredTasks;
+  return result;
 }
 
-// Create a new task with auto-generated id and timestamp
+// Create a new task
 function createTask(title) {
-  const newTask = {
+  const task = {
     id: nextId++,
     title: title,
     completed: false,
     createdAt: new Date().toISOString(),
   };
 
-  tasks.push(newTask);
-  return newTask;
+  tasks.push(task);
+  return task;
 }
 
-// Update an existing task by id
+// Update a task by id
 function updateTask(id, updates) {
-  const taskIndex = tasks.findIndex((task) => task.id === id);
+  const task = tasks.find((task) => task.id === id);
 
-  if (taskIndex === -1) {
-    return null;
-  }
+  if (!task) return null;
 
-  // Only allow updating title and completed fields
-  if (updates.title !== undefined) {
-    tasks[taskIndex].title = updates.title;
-  }
-  if (updates.completed !== undefined) {
-    tasks[taskIndex].completed = updates.completed;
-  }
+  if (updates.title !== undefined) task.title = updates.title;
+  if (updates.completed !== undefined) task.completed = updates.completed;
 
-  return tasks[taskIndex];
+  return task;
 }
 
 // Delete a task by id
 function deleteTask(id) {
-  const taskIndex = tasks.findIndex((task) => task.id === id);
+  const index = tasks.findIndex((task) => task.id === id);
 
-  if (taskIndex === -1) {
-    return false;
-  }
+  if (index === -1) return false;
 
-  tasks.splice(taskIndex, 1);
+  tasks.splice(index, 1);
   return true;
 }
 
-// Reset tasks to initial state (used in tests)
+// Reset data (used in tests)
 function resetTasks() {
-  tasks = [
-    {
-      id: 1,
-      title: "Learn React basics",
-      completed: true,
-      createdAt: "2025-01-15T10:30:00.000Z",
-    },
-    {
-      id: 2,
-      title: "Build a task manager app",
-      completed: false,
-      createdAt: "2025-01-16T09:00:00.000Z",
-    },
-    {
-      id: 3,
-      title: "Write unit tests",
-      completed: false,
-      createdAt: "2025-01-17T14:20:00.000Z",
-    },
-  ];
-  nextId = 4;
+  tasks = [];
+  nextId = 1;
 }
 
-module.exports = {
-  getAllTasks,
-  getFilteredTasks,
-  createTask,
-  updateTask,
-  deleteTask,
-  resetTasks,
-};
+module.exports = { getTasks, createTask, updateTask, deleteTask, resetTasks };
