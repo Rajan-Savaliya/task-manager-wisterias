@@ -4,6 +4,8 @@ A simple full-stack task manager app. Add tasks, mark them complete, delete them
 
 **Written by Rajan Savaliya**
 
+**Live Demo:** [https://task-manager-wisterias.vercel.app](https://task-manager-wisterias.vercel.app/)
+
 > **Note:** Use the `main` branch for code review and testing.
 
 ## Tech Stack
